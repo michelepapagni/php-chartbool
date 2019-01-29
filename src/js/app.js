@@ -3,6 +3,13 @@ require('chart.js');
 
 $(document).ready(function() {
 
+    var data_results = $('#milestone-1').attr('data-json');
+
+    var results = JSON.parse(data_results);
+
+    printChart(results);
+
+    /*
     $.ajax({
         url: 'http://localhost/Boolean/milestone-1/server.php',
         method: 'GET',
@@ -17,6 +24,7 @@ $(document).ready(function() {
             alert('Si è verificato un errore');
         }
     });
+    */
 
 });
 
