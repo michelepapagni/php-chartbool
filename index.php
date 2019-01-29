@@ -8,13 +8,11 @@
     <body>
 
         <div class="container">
-            <?php
-                include 'database.php';
-
-                $json = json_encode($data_milestone_1);
-            ?>
-
-            <canvas id="milestone-1" data-json="<?php echo $json; ?>"></canvas>
+            <h1>Milestone 1</h1>
+            <canvas id="milestone-1"></canvas>
+            <h1>Milestone 2</h1>
+            <canvas id="milestone-2-line"></canvas>
+            <canvas id="milestone-2-pie"></canvas>
         </div>
 
         <script src="js/app.js"></script>
