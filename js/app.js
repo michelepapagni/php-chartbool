@@ -43127,28 +43127,27 @@ module.exports = function(module) {
 
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
-__webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/chart.js");
+var chart_js = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/src/chart.js");
 
-var months = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
 $(document).ready(function () {
   $.ajax({
     url: 'http://localhost/Boolean/milestone-1/server.php',
     method: 'GET',
     success: function success(data) {
       var results = JSON.parse(data);
-      printLineChart($('#milestone-1'), months, 'Milestone 1', results);
-    },
-    error: function error() {
-      alert('Si è verificato un errore');
-    }
-  });
-  $.ajax({
-    url: 'http://localhost/Boolean/milestone-1/server-2.php',
-    method: 'GET',
-    success: function success(data) {
-      var results = JSON.parse(data);
-      printLineChart($('#milestone-2-line'), results.line.labels, 'Milestone 2 - Line', results.line.data);
-      printPieChart($('#milestone-2-pie'), results.pie.labels, results.pie.data); //printChartMilestone2(results);
+      console.log(results);
+
+      if ($('#simple-line').length > 0) {
+        printSimpleLine($('#simple-line'), results['simple-line']['labels'], results['simple-line']['data'], results['simple-line']['label']);
+      }
+
+      if ($('#pie').length > 0) {
+        printPie($('#pie'), results['pie']['data'], results['pie']['labels'], results['pie']['colors']);
+      }
+
+      if ($('#multi-line').length > 0) {
+        printMultiLine($('#multi-line'), results['multi-line']['labels'], results['multi-line']['datasets']);
+      }
     },
     error: function error() {
       alert('Si è verificato un errore');
@@ -43156,41 +43155,7 @@ $(document).ready(function () {
   });
 });
 
-function printChartMilestone2(results) {
-  var dataMilestone2Line = results['fatturato']['data'];
-  printLineChart($('#milestone-2-line'), months, 'Milestone 2 - Line', dataMilestone2Line);
-  var dataMilestone2Pie = results['fatturato_by_agent']['data'];
-  var processedMilestone2Pie = processMilestone2Data(dataMilestone2Pie);
-  printPieChart($('#milestone-2-pie'), processedMilestone2Pie.labels, processedMilestone2Pie.data);
-}
-
-function processMilestone2Data(results) {
-  var processedMilestone2Pie = {
-    labels: [],
-    data: []
-  };
-
-  for (var agente in results) {
-    processedMilestone2Pie.labels.push(agente);
-    processedMilestone2Pie.data.push(results[agente]);
-  }
-
-  return processedMilestone2Pie;
-}
-
-function printPieChart(selettore, labels, results) {
-  new Chart(selettore, {
-    type: 'pie',
-    data: {
-      datasets: [{
-        data: results
-      }],
-      labels: labels
-    }
-  });
-}
-
-function printLineChart(selettore, labels, title, results) {
+function printSimpleLine(selettore, labels, data, title) {
   new Chart(selettore, {
     type: 'line',
     data: {
@@ -43199,8 +43164,32 @@ function printLineChart(selettore, labels, title, results) {
         label: title,
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
-        data: results
+        data: data
       }]
+    }
+  });
+}
+
+function printPie(selettore, data, labels, colors) {
+  new Chart(selettore, {
+    type: 'pie',
+    data: {
+      datasets: [{
+        data: data,
+        backgroundColor: colors
+      }],
+      // These labels appear in the legend and in the tooltips when hovering different arcs
+      labels: labels
+    }
+  });
+}
+
+function printMultiLine(selettore, labels, datasets) {
+  new Chart(selettore, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: datasets
     }
   });
 }
